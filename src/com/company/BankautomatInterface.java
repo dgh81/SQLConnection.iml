@@ -17,6 +17,7 @@ public class BankautomatInterface extends JFrame {
     private JPasswordField passwordField2;
     private JButton loginButton;
     private JPanel myPanel;
+    //private JFrame frame;
 
 
 
@@ -25,6 +26,7 @@ public class BankautomatInterface extends JFrame {
     HashMap hashmapKontonummerToPassword = mysql.buildKontonummerToPasswordHashmap("BankUsers_tbl");
 
     public BankautomatInterface() {
+
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -49,6 +51,8 @@ public class BankautomatInterface extends JFrame {
                     BankautomatInterface.super.getWindows()[0].dispose();
                     BankautomatInterface.getWindows()[0].dispose();
                     BankautomatInterface.super.dispose();
+
+                    //frame.dispose();
 
                     // Lukker ALLE vinduer :(
                     //System.exit(0);
