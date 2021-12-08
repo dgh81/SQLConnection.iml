@@ -3,6 +3,7 @@ package com.company;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.util.HashMap;
 
 /**
@@ -11,11 +12,15 @@ import java.util.HashMap;
  *
  */
 
-public class BankautomatInterface {
+public class BankautomatInterface extends JFrame {
     private JPasswordField passwordField1;
     private JPasswordField passwordField2;
     private JButton loginButton;
     private JPanel myPanel;
+
+
+
+    private User user = null;
     
     HashMap hashmapKontonummerToPassword = mysql.buildKontonummerToPasswordHashmap("BankUsers_tbl");
 
@@ -28,9 +33,23 @@ public class BankautomatInterface {
                 // JOptionPane.showMessageDialog(null,"test: " + e.getActionCommand());
                 // JOptionPane.showMessageDialog(null,"test: jeg virker !");
                 // try login:
-                User user = Login();
+                user = Login();
                 if (user != null) {
                     JOptionPane.showMessageDialog(null,"Login succesfuld");
+
+                    /**
+                     * Forsøg på at lukke BankautomatInterface bag os? Intet herunder virker:
+                     */
+                    BankautomatInterface.super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    BankautomatInterface.super.rootPane.dispatchEvent(new WindowEvent(BankautomatInterface.getWindows()[0], WindowEvent.WINDOW_CLOSING));
+                    BankautomatInterface.super.dispose();
+
+                    //System.out.println(super.toString());
+
+                    // Kald form UserLoggedInScreen:
+                    UserLoggedInScreen myScreen = new UserLoggedInScreen(user);
+
+
                 } // else try again
             }
         });
@@ -71,6 +90,16 @@ public class BankautomatInterface {
         return null;
     }
 
+    public static void main(String[] args) {
+        JFrame myFrame = new JFrame("BankAutomat");
+        myFrame.setContentPane(new BankautomatInterface().myPanel);
+        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myFrame.setSize(400,300);
+        myFrame.setVisible(true);
+
+        //myFrame.getContentPane().getSize();
+    }
+
     public JPasswordField getPasswordField1() {
         return passwordField1;
     }
@@ -94,13 +123,14 @@ public class BankautomatInterface {
     public void setLoginButton(JButton loginButton) {
         this.loginButton = loginButton;
     }
-    public static void main(String[] args) {
-        JFrame myFrame = new JFrame("BankAutomat");
-        myFrame.setContentPane(new BankautomatInterface().myPanel);
-        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        myFrame.setSize(400,300);
-        myFrame.setVisible(true);
 
-        //myFrame.getContentPane().getSize();
+    public User getUser() {
+        return user;
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+
 }

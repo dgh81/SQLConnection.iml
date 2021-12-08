@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SQLConnectionDGH.iml" filepath="$PROJECT_DIR$/SQLConnectionDGH.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SQLConnection.iml" filepath="$PROJECT_DIR$/SQLConnection.iml" />
     </modules>
   </component>
 </project>

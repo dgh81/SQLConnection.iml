@@ -40,6 +40,10 @@ public class Main {
         //System.out.println("Next available unique ID: " + (mysql.findNextUID("BankUsers_tbl") + 1));
 
         BankautomatInterface Bankinterface = new BankautomatInterface();
+        Bankinterface.main(null);
+/*        if (Bankinterface.getUser() != null) {
+            System.out.println(Bankinterface.getUser().getName());
+        }*/
 
     }
 }
