@@ -40,11 +40,15 @@ public class BankautomatInterface extends JFrame {
                     /**
                      * Forsøg på at lukke BankautomatInterface bag os? Intet herunder virker:
                      */
-                    BankautomatInterface.super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    BankautomatInterface.super.rootPane.dispatchEvent(new WindowEvent(BankautomatInterface.getWindows()[0], WindowEvent.WINDOW_CLOSING));
-                    BankautomatInterface.super.dispose();
-
+                    // BankautomatInterface.super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    // BankautomatInterface.super.rootPane.dispatchEvent(new WindowEvent(BankautomatInterface.getWindows()[0], WindowEvent.WINDOW_CLOSING));
+                    // BankautomatInterface.super.dispose();
                     //System.out.println(super.toString());
+
+                    BankautomatInterface.getWindows()[0].dispose();
+                    // Lukker ALLE vinduer :(
+                    //System.exit(0);
+
 
                     // Kald form UserLoggedInScreen:
                     UserLoggedInScreen myScreen = new UserLoggedInScreen(user);
