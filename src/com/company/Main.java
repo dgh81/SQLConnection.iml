@@ -9,7 +9,7 @@ public class Main {
 
         mysql.connectToMySQL();
         //slet indhold i tabel:
-        //mysql.flushSQLTable("BankUsers_tbl");
+        mysql.flushSQLTable("BankUsers_tbl");
 
         //opret ny user med unikt ID (og navn): BRUGES IKKE LÆNGERE DA SQL AUTO-INCREMENTER:
         //final int ID = mysql.findNextUID("BankUsers_tbl") + 1;

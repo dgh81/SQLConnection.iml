@@ -40,11 +40,19 @@ public class BankautomatInterface extends JFrame {
                     /**
                      * Forsøg på at lukke BankautomatInterface bag os? Intet herunder virker:
                      */
-                    BankautomatInterface.super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    BankautomatInterface.super.rootPane.dispatchEvent(new WindowEvent(BankautomatInterface.getWindows()[0], WindowEvent.WINDOW_CLOSING));
+                    // BankautomatInterface.super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    // BankautomatInterface.super.rootPane.dispatchEvent(new WindowEvent(BankautomatInterface.getWindows()[0], WindowEvent.WINDOW_CLOSING));
+                    // BankautomatInterface.super.dispose();
+                    //System.out.println(super.toString());
+
+                    // Virker KUN når kode køres fra BankautomatInterface.main ???????:
+                    BankautomatInterface.super.getWindows()[0].dispose();
+                    BankautomatInterface.getWindows()[0].dispose();
                     BankautomatInterface.super.dispose();
 
-                    //System.out.println(super.toString());
+                    // Lukker ALLE vinduer :(
+                    //System.exit(0);
+
 
                     // Kald form UserLoggedInScreen:
                     UserLoggedInScreen myScreen = new UserLoggedInScreen(user);
@@ -93,7 +101,8 @@ public class BankautomatInterface extends JFrame {
     public static void main(String[] args) {
         JFrame myFrame = new JFrame("BankAutomat");
         myFrame.setContentPane(new BankautomatInterface().myPanel);
-        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         myFrame.setSize(400,300);
         myFrame.setVisible(true);
 

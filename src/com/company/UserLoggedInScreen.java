@@ -38,7 +38,8 @@ public class UserLoggedInScreen extends JFrame {
         //System.out.println("test");
         UserLoggedInScreen myFrame = this; //new UserLoggedInScreen(user);
         myFrame.setContentPane(myPanel);
-        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         myFrame.setSize(400,300);
         myFrame.setTitleLabel("User bank info");
         myFrame.setNameLabel("Name: " + user.getName());
