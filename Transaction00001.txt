@@ -1,0 +1,2 @@
+TimeDate FraKontonummer TilKontonummer Beløb
+12-02-2021 10:05:13 111111 10 444444
