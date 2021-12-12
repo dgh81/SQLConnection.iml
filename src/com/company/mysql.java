@@ -161,6 +161,22 @@ public class mysql {
         }
     }
 
+    public static void updateUserInSQL(User user) {
+//        UPDATE table_name
+//        SET column1 = value1, column2 = value2, ...
+//        WHERE condition;
+        try {
+            Connection connection = connectToMySQL();
+            String sql = "UPDATE BankUsers_tbl SET Saldo = " +user.getSaldo() + " WHERE Kontonummer = " + user.getKontonummer() ;
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.executeUpdate();
+
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static HashMap buildKontonummerToPasswordHashmap(String tablename) {
         HashMap<Integer, String> KontonummerToPasswordHashmap = new HashMap();
         try {
@@ -176,6 +192,28 @@ public class mysql {
             e.printStackTrace();
             return null;
         }
+    }
+    public static boolean userAccountExists(int kontonummer){
+        boolean result = false;
+        try {
+            Connection connection = connectToMySQL();
+            Statement statement = connection.createStatement();
+
+            ResultSet resultsetIDs = statement.executeQuery("select * from BankUsers_tbl WHERE Kontonummer='" + kontonummer + "'");
+            while (resultsetIDs.next()) {
+                if (Integer.valueOf(resultsetIDs.getInt("Kontonummer")) == kontonummer) {
+                    connection.close();
+                    return true;
+                }
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return result;
     }
 }
 

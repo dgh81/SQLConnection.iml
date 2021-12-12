@@ -1,9 +1,11 @@
 package com.company;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -18,15 +20,18 @@ public class BankautomatInterface extends JFrame {
     private JButton loginButton;
     private JPanel myPanel;
     //private JFrame frame;
-
-
-
     private User user = null;
     
     HashMap hashmapKontonummerToPassword = mysql.buildKontonummerToPasswordHashmap("BankUsers_tbl");
 
     public BankautomatInterface() {
-
+        JFrame myFrame = this; //new JFrame("BankAutomat");
+        myFrame.setContentPane(myPanel); //new BankautomatInterface().
+        //myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        myFrame.setTitle("BankAutomat");
+        myFrame.setSize(400,300);
+        myFrame.setVisible(true);
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -48,19 +53,37 @@ public class BankautomatInterface extends JFrame {
                     //System.out.println(super.toString());
 
                     // Virker KUN når kode køres fra BankautomatInterface.main ???????:
-                    BankautomatInterface.super.getWindows()[0].dispose();
+                    /* BankautomatInterface.super.getWindows()[0].dispose();
                     BankautomatInterface.getWindows()[0].dispose();
-                    BankautomatInterface.super.dispose();
+                    BankautomatInterface.super.dispose(); */
 
-                    //frame.dispose();
+
+                        //LOOP og luk, men lukker faktisk kun 1 vindue??:
+/*                        Frame[] frames = BankautomatInterface.getFrames();
+                        for (Frame frame : frames) {
+                            if (frame.isVisible()) {
+                                System.out.println(frame.getTitle());
+                                frame.dispose();
+                            }
+                        }*/
+
+                    myFrame.dispose();
+
+                    // VIRKER (nogle gange?):
+                    // 1 ??? :
+                    // BankautomatInterface.getFrames()[1].dispose();
+
+                    // og :
+                    // Arrays.stream(BankautomatInterface.getFrames()).distinct().close();// [1].dispose();
+
 
                     // Lukker ALLE vinduer :(
                     //System.exit(0);
 
 
                     // Kald form UserLoggedInScreen:
-                    UserLoggedInScreen myScreen = new UserLoggedInScreen(user);
-
+                    //UserLoggedInScreen myScreen = new UserLoggedInScreen(user);
+                    new UserLoggedInScreen(user);
 
                 } // else try again
             }
@@ -96,6 +119,9 @@ public class BankautomatInterface extends JFrame {
             System.out.println("User: \"" + loggedInUser.getName() + "\" is now logged in.");
             return loggedInUser;
         } else {
+            /**
+             * Ret til msgbox:
+             */
             System.out.println("Fejl i password! Prøv igen.");
         }
 
@@ -103,14 +129,7 @@ public class BankautomatInterface extends JFrame {
     }
 
     public static void main(String[] args) {
-        JFrame myFrame = new JFrame("BankAutomat");
-        myFrame.setContentPane(new BankautomatInterface().myPanel);
-        //myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        myFrame.setSize(400,300);
-        myFrame.setVisible(true);
 
-        //myFrame.getContentPane().getSize();
     }
 
     public JPasswordField getPasswordField1() {
