@@ -25,7 +25,7 @@ public class mysql {
             e.printStackTrace();
         }
         try {
-            String url = "jdbc:mysql://mysql85.unoeuro.com:3306/danielguldberg_dk_db";  // danielguldberg_dk_db_bank2
+            String url = "jdbc:mysql://mysql85.unoeuro.com:3306/danielguldberg_dk_db";  // danielguldberg_dk_db
             Connection connection = DriverManager.getConnection(url, "danielguldberg_dk", "280781");
             return connection;
         } catch (Exception e) {
@@ -52,10 +52,50 @@ public class mysql {
     }
 
     /**
+     *
+     * @param kontonummer
+     * @param tablename
+     * @return
+     */
+    public static User getUserFromSQL(String email, String password, String tablename) {
+        User loggedInUser = new User();
+        try {
+            Connection connection = connectToMySQL();
+            Statement statement = connection.createStatement();
+            String sql = "";
+            //sql = "SELECT * FROM `" + tablename + "` WHERE Email=" + email + " AND Password=" + password;
+/*            sql = "SELECT * FROM 'Customers' WHERE 'Email'=" + email + " AND 'Password'=" + password;*/
+            //sql = "SELECT * FROM Customers WHERE Email='danielguldberg@gmail.com' AND Password='1234'";
+
+            sql = "SELECT * FROM Customers WHERE Email='" + email + "' AND Password='" + password + "'";
+
+            ResultSet getCustomer = statement.executeQuery(sql);
+
+            System.out.println("Loggede på :-)");
+
+            // Tjek først om ResultSet er !null.
+            //Create User her, for loop:
+            while (getCustomer.next()) {
+                loggedInUser.setName(getCustomer.getString(2));
+                loggedInUser.setEmail(getCustomer.getString(3));
+                loggedInUser.setPhone(getCustomer.getString(4));
+                loggedInUser.setAddress(getCustomer.getString(5));
+                loggedInUser.setPassword(getCustomer.getString(6));
+            }
+
+            connection.close();
+            return loggedInUser;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * Fjern understående?
      * SQL auto ID klarer det.
      * @param tablename
-     * @return
+     * @return int
      */
     public static int findNextUID(String tablename) {
         try {
@@ -76,35 +116,13 @@ public class mysql {
         }
     }
 
-    public static User getUserFromSQL(int kontonummer, String tablename) {
-        User loggedInUser = new User();
-        try {
-            Connection connection = connectToMySQL();
-            Statement statement = connection.createStatement();
-            String sql = "";
-            sql = "SELECT `ID`, `Navn`, `Saldo`, `Kontonummer`, `Password` FROM `" + tablename + "` WHERE Kontonummer=" + kontonummer;
-            ResultSet getCustomer = statement.executeQuery(sql);
-
-            while (getCustomer.next()) {
-                loggedInUser.setName(getCustomer.getString(2));
-                loggedInUser.setSaldo(getCustomer.getDouble(3));
-                loggedInUser.setKontonummer(getCustomer.getInt(4));
-                loggedInUser.setPassword(getCustomer.getString(5));
-            }
-            connection.close();
-            return loggedInUser;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public static void insertNewUserIntoSQL(User user, String tablename) {
         try {
             Connection connection = connectToMySQL();
             // Parametre via variable:
             //PreparedStatement addCustomer = connection.prepareStatement("INSERT INTO BankUsers_tbl(ID,Navn,Saldo) VALUES ('" + user.getID() + "', '" + user.getName() + "', '" + user.getSaldo() + "')");
-            PreparedStatement addCustomer = connection.prepareStatement("INSERT INTO BankUsers_tbl(Navn,Saldo,Kontonummer,Password) VALUES ('" + user.getName() + "', '" + user.getSaldo()+ "', '" + user.getKontonummer()+ "', '" + user.getPassword() + "')");
+            PreparedStatement addCustomer = connection.
+                    prepareStatement("INSERT INTO BankUsers_tbl(Navn,Saldo,Kontonummer,Password) VALUES ('" + user.getName() + "', '" + user.getEmail()+ "', '" + user.getPhone()+ "', '" + user.getAddress() + "', '" + user.getAddress() + "')");
             // Send addCustomer til execution:
             addCustomer.executeUpdate();
             connection.close();
@@ -119,7 +137,7 @@ public class mysql {
             // Parametre via variable:
             for (int i = 0; i < user.length; i++) {
                 String sql = "";
-                sql = "INSERT INTO " + tablename + "(Navn,Saldo,Kontonummer,Password) VALUES ('" + user[i].getName() + "', '" + user[i].getSaldo()+ "', '" + user[i].getKontonummer()+ "', '" + user[i].getPassword() + "')";
+                sql = "INSERT INTO " + tablename + "(Navn,Saldo,Kontonummer,Password) VALUES ('" + user[i].getName() + "', '" + user[i].getEmail()+ "', '" + user[i].getPhone()+ "', '" + user[i].getAddress() +"', '" + user[i].getAddress() + "')";
 
                 //PreparedStatement addCustomer = connection.prepareStatement("INSERT INTO BankUsers_tbl(ID,Navn,Saldo) VALUES ('" + user[i].getID() + "', '" + user[i].getName() + "', '" + user[i].getSaldo() + "')");
                 PreparedStatement addCustomer = connection.prepareStatement(sql);
@@ -152,7 +170,11 @@ public class mysql {
             ResultSet resultsetIDs = statement.executeQuery("select * from " + tablename);
             while (resultsetIDs.next()) {
                 //resultsetIDs.getString(2);
-                System.out.print("ID:" + resultsetIDs.getString(1) + " Name: " + resultsetIDs.getString(2) + " " + resultsetIDs.getString(3) + " " + resultsetIDs.getString(4) + " " + resultsetIDs.getString(5));
+                System.out.print("ID:" + resultsetIDs.getString(1) + " "
+                        + resultsetIDs.getString(2) + " "
+                        + resultsetIDs.getString(3) + " "
+                        + resultsetIDs.getString(4) + " "
+                        + resultsetIDs.getString(5));
                 System.out.println();
             }
             connection.close();
@@ -161,7 +183,7 @@ public class mysql {
         }
     }
 
-    public static void updateUserInSQL(User user) {
+    /*public static void updateUserInSQL(User user) {
 //        UPDATE table_name
 //        SET column1 = value1, column2 = value2, ...
 //        WHERE condition;
@@ -175,7 +197,7 @@ public class mysql {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     public static HashMap buildKontonummerToPasswordHashmap(String tablename) {
         HashMap<Integer, String> KontonummerToPasswordHashmap = new HashMap();
@@ -193,15 +215,15 @@ public class mysql {
             return null;
         }
     }
-    public static boolean userAccountExists(int kontonummer){
+    public static boolean userAccountExists(String email){
         boolean result = false;
         try {
             Connection connection = connectToMySQL();
             Statement statement = connection.createStatement();
 
-            ResultSet resultsetIDs = statement.executeQuery("select * from BankUsers_tbl WHERE Kontonummer='" + kontonummer + "'");
+            ResultSet resultsetIDs = statement.executeQuery("select * from Customers WHERE Email='" + email + "'");
             while (resultsetIDs.next()) {
-                if (Integer.valueOf(resultsetIDs.getInt("Kontonummer")) == kontonummer) {
+                if (resultsetIDs.getString("Email").equalsIgnoreCase(email)) {
                     connection.close();
                     return true;
                 }

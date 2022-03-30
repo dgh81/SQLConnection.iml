@@ -7,31 +7,16 @@ import java.util.Scanner;
 
 public class User {
     private String name;
-    private Double saldo;
-    private int kontonummer;
+    private String email;
+    private String phone;
+    private String address;
     private String password;
-
-    public int getKontonummer() {
-        return kontonummer;
-    }
-
-    public void setKontonummer(int kontonummer) {
-        this.kontonummer = kontonummer;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public User() {}
     public User(String name, Double saldo, int kontonummer, String password) {
         this.name = name;
-        this.saldo = saldo;
-        this.kontonummer = kontonummer;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
         this.password = password;
     }
 
@@ -43,15 +28,38 @@ public class User {
         this.name = name;
     }
 
-    public Double getSaldo() {
-        return saldo;
+    public String getEmail() {
+        return email;
     }
 
-    public void setSaldo(Double saldo) {
-        this.saldo = saldo;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public static User[] createUsersFromTxtFile(String filepath) throws FileNotFoundException {
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+/*public static User[] createUsersFromTxtFile(String filepath) throws FileNotFoundException {
         int numberOfUsersInFile = countLinesInTxtFile(filepath);
 
         User[] users = new User[numberOfUsersInFile];
@@ -70,9 +78,9 @@ public class User {
 
         }
         return users;
-    }
+    }*/
 
-    public static int countLinesInTxtFile(String filepath) throws FileNotFoundException {
+    /*public static int countLinesInTxtFile(String filepath) throws FileNotFoundException {
         int result = 0;
         File f = new File(filepath);
         Scanner scanner = new Scanner(f);
@@ -82,5 +90,5 @@ public class User {
             scanner.nextLine();
         }
         return result;
-    }
+    }*/
 }

@@ -12,7 +12,10 @@ public class Main {
          * Opret transaktionshistorik som txt filer
          */
 
-        mysql.connectToMySQL();
+        //mysql.connectToMySQL();
+
+        User user = mysql.getUserFromSQL("danielguldberg@gmail.com", "1234", "Customers");
+        System.out.println(user.getEmail());
         //slet indhold i tabel:
         //mysql.flushSQLTable("BankUsers_tbl");
 
@@ -44,11 +47,15 @@ public class Main {
         //sæt denne tilbage:
         //mysql.insertNewUsersIntoSQL(users,"BankUsers_tbl");
 
-        mysql.printSQLUsers("BankUsers_tbl");
+        // mysql.printSQLUsers("Customers");
 
         //System.out.println("Next available unique ID: " + (mysql.findNextUID("BankUsers_tbl") + 1));
 
-        BankautomatInterface Bankinterface = new BankautomatInterface();
+
+        //NYT INTERFACE HER
+        // BankautomatInterface Bankinterface = new BankautomatInterface();
+
+
         //Bankinterface.main(null);
 
 
