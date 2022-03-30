@@ -20,6 +20,17 @@ public class User {
         this.password = password;
     }
 
+    public String getUserSubClass(User user) {
+        //TODO gør generisk og flyt ud af main:
+        if(user.getClass().getName().equalsIgnoreCase("com.company.Customer")) {
+            //System.out.println("This user is a Customer");
+            return "customer";
+        } else {
+            //System.out.println("This user is an Employee");
+            return "employee";
+        }
+    }
+
     public String getName() {
         return name;
     }

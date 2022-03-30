@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:mysql://mysql85.unoeuro.com:3306/danielguldberg_dk_db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="dghsql" uuid="265e6473-7b29-480b-bf7d-b57287641b6e">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://mysql85.unoeuro.com:3306/danielguldberg_dk_db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

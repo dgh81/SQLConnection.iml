@@ -13,11 +13,29 @@ import java.util.HashMap;
 
 public class mysql {
 
+    private static volatile mysql instance;
+
+    private mysql(){
+
+    }
+
+    public static mysql getInstance () {
+        mysql result = instance;
+        if (result == null) {
+            synchronized (mysql.class) {
+                result = instance;
+                if (result == null) {
+                    instance = result = new mysql();
+                }
+            }
+        }
+        return result;
+    }
+
     public static Connection connectToMySQL() throws SQLException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         try {
@@ -47,8 +65,80 @@ public class mysql {
         }
     }
 
+    //TODO husk at lave email unik i tabellen i sql
+    // Del denne i mindst 2 funktioner...
+    // overvej hvad der skal ske med gender/socialnumber-felterne, skal ikke være her... (bruges pt til at bestemme customer vs empl, men det skal vel være et slags type-felt?)
 
-    public static Customer getCustomerFromSQL(String email, String password, String tablename, String gender) {
+    public static <E> E getUserFromSQL(String email, String password, String tablename) {
+
+        if (tablename.equalsIgnoreCase("Customers")) {
+
+            Customer loggedInCustomer = new Customer();
+            try {
+                Connection connection = connectToMySQL();
+                Statement statement = connection.createStatement();
+                String sql = "";
+
+                sql = "SELECT * FROM Customers WHERE Email='" + email + "' AND Password='" + password + "'";
+
+                ResultSet getCustomer = statement.executeQuery(sql);
+
+                if (getCustomer != null) {
+                    System.out.println(email + " loggede på :-)");
+                    //TODO Overvej at flytte til separat funktion
+                    while (getCustomer.next()) {
+                        loggedInCustomer.setName(getCustomer.getString(2));
+                        loggedInCustomer.setEmail(getCustomer.getString(3));
+                        loggedInCustomer.setPhone(getCustomer.getString(4));
+                        loggedInCustomer.setAddress(getCustomer.getString(5));
+                        loggedInCustomer.setPassword(getCustomer.getString(6));
+                        //loggedInCustomer.setGender(getCustomer.getString(7));
+                    }
+                }
+
+                connection.close();
+                return (E) loggedInCustomer;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+
+            Employee loggedInEmployee = new Employee("123456789");
+            try {
+                Connection connection = connectToMySQL();
+                Statement statement = connection.createStatement();
+                String sql = "";
+
+                sql = "SELECT * FROM Employees WHERE Email='" + email + "' AND Password='" + password + "'";
+
+                ResultSet getEmployee = statement.executeQuery(sql);
+
+                if (getEmployee != null) {
+                    System.out.println(email + " loggede på :-)");
+                    //TODO Overvej at flytte til separat funktion
+                    while (getEmployee.next()) {
+                        loggedInEmployee.setName(getEmployee.getString(2));
+                        loggedInEmployee.setEmail(getEmployee.getString(3));
+                        loggedInEmployee.setPhone(getEmployee.getString(4));
+                        loggedInEmployee.setAddress(getEmployee.getString(5));
+                        loggedInEmployee.setPassword(getEmployee.getString(6));
+                        //loggedInEmployee.setSocialIDNumber(getCustomer.getString(6));
+
+                    }
+                }
+
+                connection.close();
+                return (E) loggedInEmployee;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+    }
+
+
+ /*   public static Customer getCustomerFromSQL(String email, String password, String tablename, String gender) {
         Customer loggedInCustomer = new Customer(gender);
         try {
             Connection connection = connectToMySQL();
@@ -61,7 +151,8 @@ public class mysql {
 
 
             if (getCustomer != null) {
-                System.out.println("Loggede på :-)");
+                System.out.println(email + " loggede på :-)");
+                //TODO Overvej at flytte til separat funktion
                 while (getCustomer.next()) {
                     loggedInCustomer.setName(getCustomer.getString(2));
                     loggedInCustomer.setEmail(getCustomer.getString(3));
@@ -77,7 +168,7 @@ public class mysql {
             e.printStackTrace();
             return null;
         }
-    }
+    }*/
 
 /*
     */
@@ -109,7 +200,8 @@ public class mysql {
 */
 
     /**
-     * omskriv til ny User klasse:
+     * omskriv til ny User klasse
+     * implementér tablename
      */
     public static void insertNewUserIntoSQL(User user, String tablename) {
         try {
@@ -126,12 +218,8 @@ public class mysql {
         }
     }
 
-    /**
-     * omskriv til at virke med ny User klasse
-     * @param user
-     * @param tablename
-     */
-    public static void insertNewUsersIntoSQL(User[] user, String tablename) {
+
+/*    public static void insertNewUsersIntoSQL(User[] user, String tablename) {
         try {
             Connection connection = connectToMySQL();
 
@@ -149,7 +237,7 @@ public class mysql {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     /**
      * omskriv til rent faktisk at bruge var tablename
@@ -167,7 +255,7 @@ public class mysql {
     }
 
 
-    public static void printSQLUsers(String tablename) {
+    public static void printSQLTable(String tablename) {
         try {
             Connection connection = connectToMySQL();
             Statement statement = connection.createStatement();
