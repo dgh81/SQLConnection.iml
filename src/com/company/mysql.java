@@ -5,11 +5,7 @@ package com.company;
  * under Database til højre i Intellij -> add database som mysql
  * Højreklik connection navn til højre i Intellij -> Properties -> Advanced set både connection og driver til "requireSSL" til NO
  */
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import javax.sql.DataSource;
+
 import java.sql.*;
 import java.util.HashMap;
 
@@ -51,36 +47,28 @@ public class mysql {
         }
     }
 
-    /**
-     *
-     * @param kontonummer
-     * @param tablename
-     * @return
-     */
+
     public static User getUserFromSQL(String email, String password, String tablename) {
         User loggedInUser = new User();
         try {
             Connection connection = connectToMySQL();
             Statement statement = connection.createStatement();
             String sql = "";
-            //sql = "SELECT * FROM `" + tablename + "` WHERE Email=" + email + " AND Password=" + password;
-/*            sql = "SELECT * FROM 'Customers' WHERE 'Email'=" + email + " AND 'Password'=" + password;*/
-            //sql = "SELECT * FROM Customers WHERE Email='danielguldberg@gmail.com' AND Password='1234'";
 
             sql = "SELECT * FROM Customers WHERE Email='" + email + "' AND Password='" + password + "'";
 
             ResultSet getCustomer = statement.executeQuery(sql);
 
-            System.out.println("Loggede på :-)");
 
-            // Tjek først om ResultSet er !null.
-            //Create User her, for loop:
-            while (getCustomer.next()) {
-                loggedInUser.setName(getCustomer.getString(2));
-                loggedInUser.setEmail(getCustomer.getString(3));
-                loggedInUser.setPhone(getCustomer.getString(4));
-                loggedInUser.setAddress(getCustomer.getString(5));
-                loggedInUser.setPassword(getCustomer.getString(6));
+            if (getCustomer != null) {
+                System.out.println("Loggede på :-)");
+                while (getCustomer.next()) {
+                    loggedInUser.setName(getCustomer.getString(2));
+                    loggedInUser.setEmail(getCustomer.getString(3));
+                    loggedInUser.setPhone(getCustomer.getString(4));
+                    loggedInUser.setAddress(getCustomer.getString(5));
+                    loggedInUser.setPassword(getCustomer.getString(6));
+                }
             }
 
             connection.close();
@@ -91,12 +79,15 @@ public class mysql {
         }
     }
 
-    /**
+/*
+    */
+/**
      * Fjern understående?
      * SQL auto ID klarer det.
      * @param tablename
      * @return int
-     */
+     *//*
+
     public static int findNextUID(String tablename) {
         try {
             Connection connection = connectToMySQL();
@@ -115,15 +106,19 @@ public class mysql {
             return 0;
         }
     }
+*/
 
+    /**
+     * omskriv til ny User klasse:
+     */
     public static void insertNewUserIntoSQL(User user, String tablename) {
         try {
             Connection connection = connectToMySQL();
-            // Parametre via variable:
+
             //PreparedStatement addCustomer = connection.prepareStatement("INSERT INTO BankUsers_tbl(ID,Navn,Saldo) VALUES ('" + user.getID() + "', '" + user.getName() + "', '" + user.getSaldo() + "')");
             PreparedStatement addCustomer = connection.
                     prepareStatement("INSERT INTO BankUsers_tbl(Navn,Saldo,Kontonummer,Password) VALUES ('" + user.getName() + "', '" + user.getEmail()+ "', '" + user.getPhone()+ "', '" + user.getAddress() + "', '" + user.getAddress() + "')");
-            // Send addCustomer til execution:
+
             addCustomer.executeUpdate();
             connection.close();
         } catch (Exception e) {
@@ -131,17 +126,22 @@ public class mysql {
         }
     }
 
+    /**
+     * omskriv til at virke med ny User klasse
+     * @param user
+     * @param tablename
+     */
     public static void insertNewUsersIntoSQL(User[] user, String tablename) {
         try {
             Connection connection = connectToMySQL();
-            // Parametre via variable:
+
             for (int i = 0; i < user.length; i++) {
                 String sql = "";
                 sql = "INSERT INTO " + tablename + "(Navn,Saldo,Kontonummer,Password) VALUES ('" + user[i].getName() + "', '" + user[i].getEmail()+ "', '" + user[i].getPhone()+ "', '" + user[i].getAddress() +"', '" + user[i].getAddress() + "')";
 
                 //PreparedStatement addCustomer = connection.prepareStatement("INSERT INTO BankUsers_tbl(ID,Navn,Saldo) VALUES ('" + user[i].getID() + "', '" + user[i].getName() + "', '" + user[i].getSaldo() + "')");
                 PreparedStatement addCustomer = connection.prepareStatement(sql);
-                // Send addCustomer til execution:
+
                 addCustomer.executeUpdate();
             }
 
@@ -151,6 +151,10 @@ public class mysql {
         }
     }
 
+    /**
+     * omskriv til rent faktisk at bruge var tablename
+     * @param tablename
+     */
     public static void flushSQLTable(String tablename) {
         try {
             Connection connection = connectToMySQL();
@@ -162,6 +166,9 @@ public class mysql {
         }
     }
 
+    /**
+     * omskriv så den udskriver de første 6 kolonner fra sql:
+     */
     public static void printSQLUsers(String tablename) {
         try {
             Connection connection = connectToMySQL();
@@ -215,6 +222,8 @@ public class mysql {
             return null;
         }
     }
+
+
     public static boolean userAccountExists(String email){
         boolean result = false;
         try {
