@@ -48,8 +48,8 @@ public class mysql {
     }
 
 
-    public static User getUserFromSQL(String email, String password, String tablename) {
-        User loggedInUser = new User();
+    public static Customer getCustomerFromSQL(String email, String password, String tablename, String gender) {
+        Customer loggedInCustomer = new Customer(gender);
         try {
             Connection connection = connectToMySQL();
             Statement statement = connection.createStatement();
@@ -63,16 +63,16 @@ public class mysql {
             if (getCustomer != null) {
                 System.out.println("Loggede på :-)");
                 while (getCustomer.next()) {
-                    loggedInUser.setName(getCustomer.getString(2));
-                    loggedInUser.setEmail(getCustomer.getString(3));
-                    loggedInUser.setPhone(getCustomer.getString(4));
-                    loggedInUser.setAddress(getCustomer.getString(5));
-                    loggedInUser.setPassword(getCustomer.getString(6));
+                    loggedInCustomer.setName(getCustomer.getString(2));
+                    loggedInCustomer.setEmail(getCustomer.getString(3));
+                    loggedInCustomer.setPhone(getCustomer.getString(4));
+                    loggedInCustomer.setAddress(getCustomer.getString(5));
+                    loggedInCustomer.setPassword(getCustomer.getString(6));
                 }
             }
 
             connection.close();
-            return loggedInUser;
+            return loggedInCustomer;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -166,9 +166,7 @@ public class mysql {
         }
     }
 
-    /**
-     * omskriv så den udskriver de første 6 kolonner fra sql:
-     */
+
     public static void printSQLUsers(String tablename) {
         try {
             Connection connection = connectToMySQL();
@@ -181,7 +179,8 @@ public class mysql {
                         + resultsetIDs.getString(2) + " "
                         + resultsetIDs.getString(3) + " "
                         + resultsetIDs.getString(4) + " "
-                        + resultsetIDs.getString(5));
+                        + resultsetIDs.getString(5) + " "
+                        + resultsetIDs.getString(6));
                 System.out.println();
             }
             connection.close();
