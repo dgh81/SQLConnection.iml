@@ -1,4 +1,0 @@
-Pernille 12.50 111111 test
-Peter 22.75 222222 test2
-Christian 30.10 333333 test3
-Daniel 244.00 444444 test4
