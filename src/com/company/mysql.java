@@ -9,14 +9,12 @@ package com.company;
 import java.sql.*;
 import java.util.HashMap;
 
-//TRUNCATE TABLE BankUsers_tbl; tømmer tabellen BankUsers_tbl
+    //TODO sørg for at alle sql kald bruger PreparedStatement.
 
 public class mysql {
 
     private static volatile mysql instance;
-
     private mysql(){
-
     }
 
     public static mysql getInstance () {
@@ -32,6 +30,7 @@ public class mysql {
         return result;
     }
 
+    //Skal denne være en Singleton klasse for sig selv?
     public static Connection connectToMySQL() throws SQLException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -48,6 +47,7 @@ public class mysql {
         }
     }
 
+    //slet?
     public static int countRowsInTable(String tablename) {
         try {
             Connection connection = connectToMySQL();
@@ -65,9 +65,9 @@ public class mysql {
         }
     }
 
-    //TODO husk at lave email unik i tabellen i sql
-    // Del denne i mindst 2 funktioner...
-    // overvej hvad der skal ske med gender/socialnumber-felterne, skal ikke være her... (bruges pt til at bestemme customer vs empl, men det skal vel være et slags type-felt?)
+    //TODO
+    // Del denne i mindst 2 funktioner... opret derefter createUserInSQL()...
+    // overvej hvad der skal ske med socialnumber-feltet, skal ikke være her...
 
     public static <E> E getUserFromSQL(String email, String password, String tablename) {
 
@@ -85,7 +85,7 @@ public class mysql {
 
                 if (getCustomer != null) {
                     System.out.println(email + " loggede på :-)");
-                    //TODO Overvej at flytte til separat funktion
+                    //TODO Overvej at flytte til separat funktion CreateCustomerInSQL(String name, etc.)
                     while (getCustomer.next()) {
                         loggedInCustomer.setName(getCustomer.getString(2));
                         loggedInCustomer.setEmail(getCustomer.getString(3));
@@ -102,6 +102,7 @@ public class mysql {
                 e.printStackTrace();
                 return null;
             }
+
         } else {
 
             Employee loggedInEmployee = new Employee("123456789");
