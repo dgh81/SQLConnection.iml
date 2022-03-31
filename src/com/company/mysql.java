@@ -7,11 +7,19 @@ package com.company;
  */
 
 import java.sql.*;
-import java.util.HashMap;
 
     //TODO sørg for at alle sql kald bruger PreparedStatement.
 
 public class mysql {
+    private static Connection connection;
+
+    static {
+        try {
+            connection = connectToMySQL();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     private static volatile mysql instance;
     private mysql(){
@@ -39,231 +47,95 @@ public class mysql {
         }
         try {
             String url = "jdbc:mysql://mysql85.unoeuro.com:3306/danielguldberg_dk_db";  // danielguldberg_dk_db
-            Connection connection = DriverManager.getConnection(url, "danielguldberg_dk", "280781");
-            return connection;
+            Connection connectionInternal = DriverManager.getConnection(url, "danielguldberg_dk", "280781");
+            return connectionInternal;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    //slet?
-    public static int countRowsInTable(String tablename) {
+    /**
+     * FUNCTIONS
+      */
+
+    public <E> E logUserIn(E element) {
+        User loggedInUser = (User) element;
         try {
-            Connection connection = connectToMySQL();
-            Statement statement = connection.createStatement();
-            int counter = 0;
-            ResultSet resultsetIDs = statement.executeQuery("select count(*) from " + tablename);
-            while (resultsetIDs.next()) {
-                counter = counter + resultsetIDs.getInt(1);
-            }
-            connection.close();
-            return counter;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    //TODO
-    // Del denne i mindst 2 funktioner... opret derefter createUserInSQL()...
-    // overvej hvad der skal ske med socialnumber-feltet, skal ikke være her...
-
-    public static <E> E getUserFromSQL(String email, String password, String tablename) {
-
-        if (tablename.equalsIgnoreCase("Customers")) {
-
-            Customer loggedInCustomer = new Customer();
-            try {
-                Connection connection = connectToMySQL();
-                Statement statement = connection.createStatement();
-                String sql = "";
-
-                sql = "SELECT * FROM Customers WHERE Email='" + email + "' AND Password='" + password + "'";
-
-                ResultSet getCustomer = statement.executeQuery(sql);
-
-                if (getCustomer != null) {
-                    System.out.println(email + " loggede på :-)");
-                    //TODO Overvej at flytte til separat funktion CreateCustomerInSQL(String name, etc.)
-                    while (getCustomer.next()) {
-                        loggedInCustomer.setName(getCustomer.getString(2));
-                        loggedInCustomer.setEmail(getCustomer.getString(3));
-                        loggedInCustomer.setPhone(getCustomer.getString(4));
-                        loggedInCustomer.setAddress(getCustomer.getString(5));
-                        loggedInCustomer.setPassword(getCustomer.getString(6));
-                        //loggedInCustomer.setGender(getCustomer.getString(7));
-                    }
-                }
-
-                connection.close();
-                return (E) loggedInCustomer;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-
-        } else {
-
-            Employee loggedInEmployee = new Employee("123456789");
-            try {
-                Connection connection = connectToMySQL();
-                Statement statement = connection.createStatement();
-                String sql = "";
-
-                sql = "SELECT * FROM Employees WHERE Email='" + email + "' AND Password='" + password + "'";
-
-                ResultSet getEmployee = statement.executeQuery(sql);
-
-                if (getEmployee != null) {
-                    System.out.println(email + " loggede på :-)");
-                    //TODO Overvej at flytte til separat funktion
-                    while (getEmployee.next()) {
-                        loggedInEmployee.setName(getEmployee.getString(2));
-                        loggedInEmployee.setEmail(getEmployee.getString(3));
-                        loggedInEmployee.setPhone(getEmployee.getString(4));
-                        loggedInEmployee.setAddress(getEmployee.getString(5));
-                        loggedInEmployee.setPassword(getEmployee.getString(6));
-                        //loggedInEmployee.setSocialIDNumber(getCustomer.getString(6));
-
-                    }
-                }
-
-                connection.close();
-                return (E) loggedInEmployee;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-    }
-
-
- /*   public static Customer getCustomerFromSQL(String email, String password, String tablename, String gender) {
-        Customer loggedInCustomer = new Customer(gender);
-        try {
-            Connection connection = connectToMySQL();
             Statement statement = connection.createStatement();
             String sql = "";
 
-            sql = "SELECT * FROM Customers WHERE Email='" + email + "' AND Password='" + password + "'";
-
-            ResultSet getCustomer = statement.executeQuery(sql);
-
-
-            if (getCustomer != null) {
-                System.out.println(email + " loggede på :-)");
-                //TODO Overvej at flytte til separat funktion
-                while (getCustomer.next()) {
-                    loggedInCustomer.setName(getCustomer.getString(2));
-                    loggedInCustomer.setEmail(getCustomer.getString(3));
-                    loggedInCustomer.setPhone(getCustomer.getString(4));
-                    loggedInCustomer.setAddress(getCustomer.getString(5));
-                    loggedInCustomer.setPassword(getCustomer.getString(6));
+            sql = "SELECT * FROM " + loggedInUser.getUserSubClass(loggedInUser) + "s" + " WHERE Email='"
+                    + loggedInUser.getEmail() + "' AND Password='"
+                    + loggedInUser.getPassword() + "'";
+            ResultSet getUser = statement.executeQuery(sql);
+            if (getUser != null) {
+                System.out.println(loggedInUser.getEmail() + " loggede på :-)");
+                //TODO Overvej at flytte til separat funktion CreateCustomerInSQL(String name, etc.)
+                while (getUser.next()) {
+                    loggedInUser.setName(getUser.getString(2));
+                    loggedInUser.setEmail(getUser.getString(3));
+                    loggedInUser.setPhone(getUser.getString(4));
+                    loggedInUser.setAddress(getUser.getString(5));
+                    loggedInUser.setPassword(getUser.getString(6));
+                    //loggedInCustomer.setGender(getCustomer.getString(7));
                 }
             }
-
-            connection.close();
-            return loggedInCustomer;
+            return (E) loggedInUser;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-    }*/
-
-/*
-    */
-/**
-     * Fjern understående?
-     * SQL auto ID klarer det.
-     * @param tablename
-     * @return int
-     *//*
-
-    public static int findNextUID(String tablename) {
-        try {
-            Connection connection = connectToMySQL();
-            Statement statement = connection.createStatement();
-            int counter = 0;
-            ResultSet resultsetIDs = statement.executeQuery("select * from " + tablename); //'ID' i stedet for * ?
-            while (resultsetIDs.next()) {
-                if (resultsetIDs.getInt(1) > counter) {
-                    counter = resultsetIDs.getInt(1);
-                }
-            }
-            connection.close();
-            return counter;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
     }
-*/
-
-    /**
-     * omskriv til ny User klasse
-     * implementér tablename
-     */
-    public static void insertNewUserIntoSQL(User user, String tablename) {
+    // TODO Husk error handling - fx ved duplicate email
+    public <E> void createNewUserIntoSQL(E element) {
         try {
-            Connection connection = connectToMySQL();
-
-            //PreparedStatement addCustomer = connection.prepareStatement("INSERT INTO BankUsers_tbl(ID,Navn,Saldo) VALUES ('" + user.getID() + "', '" + user.getName() + "', '" + user.getSaldo() + "')");
-            PreparedStatement addCustomer = connection.
-                    prepareStatement("INSERT INTO BankUsers_tbl(Navn,Saldo,Kontonummer,Password) VALUES ('" + user.getName() + "', '" + user.getEmail()+ "', '" + user.getPhone()+ "', '" + user.getAddress() + "', '" + user.getAddress() + "')");
-
-            addCustomer.executeUpdate();
-            connection.close();
+            User user = (User) element;
+            PreparedStatement addUser = connection.
+                    prepareStatement("INSERT INTO " + user.getUserSubClass(user) + "s" + " (Name,Email,Phone,Address,Password) VALUES ('"
+                            + user.getName()
+                            + "', '" + user.getEmail()
+                            + "', '" + user.getPhone()
+                            + "', '" + user.getAddress()
+                            + "', '" + user.getPassword() + "')");
+            addUser.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
-/*    public static void insertNewUsersIntoSQL(User[] user, String tablename) {
+    public <E> void deleteUser(E element) {
         try {
-            Connection connection = connectToMySQL();
-
-            for (int i = 0; i < user.length; i++) {
-                String sql = "";
-                sql = "INSERT INTO " + tablename + "(Navn,Saldo,Kontonummer,Password) VALUES ('" + user[i].getName() + "', '" + user[i].getEmail()+ "', '" + user[i].getPhone()+ "', '" + user[i].getAddress() +"', '" + user[i].getAddress() + "')";
-
-                //PreparedStatement addCustomer = connection.prepareStatement("INSERT INTO BankUsers_tbl(ID,Navn,Saldo) VALUES ('" + user[i].getID() + "', '" + user[i].getName() + "', '" + user[i].getSaldo() + "')");
-                PreparedStatement addCustomer = connection.prepareStatement(sql);
-
-                addCustomer.executeUpdate();
-            }
-
-            connection.close();
+            User user = (User) element;
+            PreparedStatement deleteCustomer = connection.
+                    prepareStatement("DELETE FROM " + user.getUserSubClass(user) + "s " + " WHERE Email = '" + user.getEmail() + "'");
+            deleteCustomer.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }*/
-
-    /**
-     * omskriv til rent faktisk at bruge var tablename
-     * @param tablename
-     */
+    }
+    public <E> void editUser(E element, String newEmail) {
+        try {
+            User user = (User) element;
+            PreparedStatement editEmployee = connection.
+                    prepareStatement("UPDATE " + user.getUserSubClass(user) + "s " + "SET email = '" + newEmail + "' WHERE Email = '" + user.getEmail() + "'");
+            editEmployee.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public static void flushSQLTable(String tablename) {
         try {
-            Connection connection = connectToMySQL();
-            PreparedStatement posted = connection.prepareStatement("TRUNCATE TABLE BankUsers_tbl");
+            PreparedStatement posted = connection.prepareStatement("TRUNCATE TABLE" + tablename);
             posted.executeUpdate();
-            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
     public static void printSQLTable(String tablename) {
         try {
-            Connection connection = connectToMySQL();
             Statement statement = connection.createStatement();
-
-            ResultSet resultsetIDs = statement.executeQuery("select * from " + tablename);
+            ResultSet resultsetIDs = statement.executeQuery("SELECT * FROM " + tablename);
             while (resultsetIDs.next()) {
-                //resultsetIDs.getString(2);
                 System.out.print("ID:" + resultsetIDs.getString(1) + " "
                         + resultsetIDs.getString(2) + " "
                         + resultsetIDs.getString(3) + " "
@@ -272,68 +144,22 @@ public class mysql {
                         + resultsetIDs.getString(6));
                 System.out.println();
             }
-            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    /*public static void updateUserInSQL(User user) {
-//        UPDATE table_name
-//        SET column1 = value1, column2 = value2, ...
-//        WHERE condition;
+    public static void printOpeningHoursTable(String tablename) {
         try {
-            Connection connection = connectToMySQL();
-            String sql = "UPDATE BankUsers_tbl SET Saldo = " +user.getSaldo() + " WHERE Kontonummer = " + user.getKontonummer() ;
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.executeUpdate();
-
-            connection.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
-
-    public static HashMap buildKontonummerToPasswordHashmap(String tablename) {
-        HashMap<Integer, String> KontonummerToPasswordHashmap = new HashMap();
-        try {
-            Connection connection = connectToMySQL();
             Statement statement = connection.createStatement();
-            ResultSet resultsetIDs = statement.executeQuery("select * from " + tablename);
+            ResultSet resultsetIDs = statement.executeQuery("SELECT * FROM " + tablename + " ORDER BY dayIndex");
             while (resultsetIDs.next()) {
-                KontonummerToPasswordHashmap.put(Integer.valueOf(resultsetIDs.getInt(4)), resultsetIDs.getString(5));
+                System.out.print("ID:" + resultsetIDs.getString(1) + " "
+                        + resultsetIDs.getString(2) + " "
+                        + resultsetIDs.getString(3));
+                System.out.println();
             }
-            connection.close();
-            return KontonummerToPasswordHashmap;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-
-    public static boolean userAccountExists(String email){
-        boolean result = false;
-        try {
-            Connection connection = connectToMySQL();
-            Statement statement = connection.createStatement();
-
-            ResultSet resultsetIDs = statement.executeQuery("select * from Customers WHERE Email='" + email + "'");
-            while (resultsetIDs.next()) {
-                if (resultsetIDs.getString("Email").equalsIgnoreCase(email)) {
-                    connection.close();
-                    return true;
-                }
-            }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        return result;
     }
 }
-
-

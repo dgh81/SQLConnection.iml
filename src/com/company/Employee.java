@@ -1,16 +1,19 @@
 package com.company;
 
 public class Employee extends User{
-    protected String socialIDNumber;
-    public Employee(String socialIDNumber) {
-        this.socialIDNumber = socialIDNumber;
+
+
+    public Employee(String name, String email, String phone, String address, String password) {
+        super.name = name;
+        super.email = email;
+        super.phone = phone;
+        super.address = address;
+        super.password = password;
+
+    }
+    public Employee() {
+
     }
 
-    public String getSocialIDNumber() {
-        return socialIDNumber;
-    }
 
-    public void setSocialIDNumber(String socialIDNumber) {
-        this.socialIDNumber = socialIDNumber;
-    }
 }

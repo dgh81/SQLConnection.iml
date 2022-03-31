@@ -1,11 +1,11 @@
 package com.company;
 
 public class User {
-    private String name;
-    private String email;
-    private String phone;
-    private String address;
-    private String password;
+    protected String name;
+    protected String email;
+    protected String phone;
+    protected String address;
+    protected String password;
     public User() {}
     public User(String name, String email, String phone, String address, String password) {
         this.name = name;
